@@ -1,0 +1,27 @@
+{
+  "name": "doc-webcomponents",
+  "authors": [
+    "Kenneth Dahlstrøm <kenneth.dahlstrom@hiof.no>"
+  ],
+  "description": "Documentation for webcomponents",
+  "keywords": [
+    "documentation",
+    "webcomponents",
+    "sass",
+    "doc"
+  ],
+  "license": "GNU",
+  "homepage": "https://github.com/hiof/doc-webcomponents.git",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "Hiof-frontend": "https://github.com/hiof/frontend.git#~3.8.1",
+    "colors": "https://github.com/hiof/colors.git#~1.0.0-beta.6",
+    "layout": "https://github.com/hiof/layout.git#~1.0.3"
+  }
+}
