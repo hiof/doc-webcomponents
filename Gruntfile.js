@@ -2,6 +2,7 @@ module.exports = function(grunt) {
     // Loads each task referenced in the packages.json file
     require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
     require('time-grunt')(grunt);
+    grunt.loadNpmTasks('sassdown');
 
     var mySecret = false;
     if (grunt.file.exists('secret.json')) {
@@ -14,42 +15,108 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         moment: require('moment'),
 
-
-        sassdoc: {
+        sassdown: {
             layout: {
-                src: 'app/assets/sass/',
-            },
-        },
-        html2md: {
-            main: {
-                src: [
-                    'sassdoc/*.html'
-                ],
-                dest: 'sassdoc/test.md'
-            },
-        },
-
-        m2j: {
-            release: {
                 options: {
-                    minify: false,
-                    width: 10000
+                    highlight: 'monokai',
+                    excludeMissing: true,
+                    handlebarsHelpers: ['templates/*.js'],
+                    readme: 'bower_components/hiof-layout/README.md',
+                    template: 'templates/sass.hbs'
                 },
+                files: [{
+                    expand: true,
+                    cwd: 'bower_components/hiof-layout/app/assets/sass',
+                    src: ['*.scss'],
+                    dest: 'build/styleguide/'
+                }]
+            },
+            colors: {
+                options: {
+                    highlight: 'monokai',
+                    excludeMissing: true,
+                    handlebarsHelpers: ['templates/*.js'],
+                    readme: 'bower_components/hiof-colors/README.md',
+                    template: 'templates/sass.hbs'
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'bower_components/hiof-colors/app/assets/sass',
+                    src: ['*.scss'],
+                    dest: 'build/styleguide/'
+                }]
+            }
+        },
+        clean: {
+            all: {
+                src: ["build/**/*", "dist/**/*"]
+            },
+
+            styleguide: {
+                src: ["build/styleguide/**/*"]
+            }
+        },
+        copy: {
+            layout: {
+                src: 'build/styleguide/layout.html',
+                dest: 'build/1-layout.json',
+            },
+            colors: {
+                src: 'build/styleguide/colors.html',
+                dest: 'build/2-colors.json',
+            },
+        },
+        "merge-json": {
+            "data": {
+                src: ["build/**/*.json"],
+                dest: "dist/data.json"
+            }
+        },
+        secret: mySecret,
+        sftp: {
+            stage: {
                 files: {
-                    'bower_components/api/sections.json': ['content/designguidelines/*.md'],
-                    'bower_components/api/files.json': ['content/files/*.md']
+                    "./": "dist/**"
                 },
+                options: {
+                    path: '<%= secret.prod.path %>',
+                    srcBasePath: "dist/",
+                    host: '<%= secret.stage.host %>',
+                    username: '<%= secret.stage.username %>',
+                    password: '<%= secret.stage.password %>',
+                    showProgress: true,
+                    createDirectories: true,
+                    directoryPermissions: parseInt(755, 8)
+                }
+            },
+            prod: {
+                files: {
+                    "./": "dist/**"
+                },
+                options: {
+                    path: '<%= secret.prod.path %>',
+                    srcBasePath: "dist/",
+                    host: '<%= secret.prod.host %>',
+                    username: '<%= secret.prod.username %>',
+                    password: '<%= secret.prod.password %>',
+                    showProgress: true,
+                    createDirectories: true,
+                    directoryPermissions: parseInt(755, 8)
+                }
             }
         }
-
     });
 
     // ----------------------------------------------------------
     // Tasks
 
     // Register tasks
-    grunt.registerTask('default', ['sassdoc', 'html2md', 'm2j']);
+    grunt.registerTask('build', ['clean:all', 'sassdown', 'copy', 'clean:styleguide', 'merge-json'])
+    grunt.registerTask('default', ['build']);
 
 
+    // Deploy tasks
+    grunt.registerTask('deploy-stage', ['build', 'sftp:stage']);
+    grunt.registerTask('deploy-prod', ['build', 'sftp:prod']);
 
 };

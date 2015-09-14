@@ -19,9 +19,8 @@
     "test",
     "tests"
   ],
-  "devDependencies": {
-    "Hiof-frontend": "https://github.com/hiof/frontend.git#~3.8.1",
-    "colors": "https://github.com/hiof/colors.git#~1.0.0-beta.6",
-    "layout": "https://github.com/hiof/layout.git#~1.0.3"
+  "dependencies": {
+    "hiof-colors": "https://github.com/hiof/colors.git#feature/add-basic-documentation",
+    "hiof-layout": "https://github.com/hiof/layout.git#feature/add-basic-documentation"
   }
 }
