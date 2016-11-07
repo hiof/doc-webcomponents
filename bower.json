@@ -20,7 +20,12 @@
     "tests"
   ],
   "dependencies": {
-    "hiof-colors": "https://github.com/hiof/colors.git#feature/add-basic-documentation",
-    "hiof-layout": "https://github.com/hiof/layout.git#feature/add-basic-documentation"
+    "hiof-colors": "https://github.com/hiof/colors.git#feature/improve-doc",
+    "hiof-layout": "https://github.com/hiof/layout.git",
+    "hiof-typography": "https://github.com/hiof/typography.git",
+    "hiof-frontend": "https://github.com/hiof/frontend.git#feature/add-webdesign-documentation"
+  },
+  "resolutions": {
+    "hiof-colors": "feature/improve-doc"
   }
 }
